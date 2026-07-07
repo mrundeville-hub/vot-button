@@ -1,0 +1,22 @@
+{
+  "name": "zen-vot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/translation.test.js",
+    "build": "./build.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vot.js/core": "^2.4.12",
+    "@vot.js/ext": "^2.4.12",
+    "@vot.js/shared": "^2.4.12"
+  },
+  "type": "module",
+  "devDependencies": {
+    "esbuild": "^0.28.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Zen VOT - Voice Over Translation",
+  "version": "1.0.0",
+  "description": "Перевод видео с YouTube через Yandex VOT API",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "zen-vot@glamlabs.app",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+  "host_permissions": [
+    "https://vot-worker.toil.cc/*",
+    "https://vot-worker-s1.toil.cc/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "48": "icon.png"
+  }
+}
