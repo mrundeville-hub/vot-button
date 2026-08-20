@@ -1,4 +1,4 @@
-// Zen VOT - Voice Over Translation for Zen Browser
+// VOT Button — Yandex voice-over translation for YouTube (Zen & Helium)
 // Production-ready version
 
 import { fetchTranslation } from "./translation.js";
@@ -9,7 +9,7 @@ let isTranslating = false;
 
 // Logger
 function log(level, ...args) {
-  const prefix = "[Zen VOT]";
+  const prefix = "[VOT Button]";
   if (level === "error") console.error(prefix, ...args);
   else if (level === "warn") console.warn(prefix, ...args);
   else console.log(prefix, ...args);
@@ -18,7 +18,7 @@ function log(level, ...args) {
 // Create translate button
 function createTranslateButton() {
   const btn = document.createElement("button");
-  btn.id = "zen-vot-btn";
+  btn.id = "vot-button-btn";
   btn.setAttribute("aria-label", "Перевести видео (Yandex VOT)");
   btn.tabIndex = 0;
   btn.innerHTML = `
@@ -26,7 +26,7 @@ function createTranslateButton() {
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
       <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
     </svg>
-    <span id="zen-vot-text">Перевести</span>
+    <span id="vot-button-text">Перевести</span>
   `;
   btn.style.cssText = `
     position: absolute;
@@ -83,8 +83,8 @@ function getPlayerContainer() {
 
 // Update button state
 function updateButtonState(state, message) {
-  const btn = document.getElementById("zen-vot-btn");
-  const text = document.getElementById("zen-vot-text");
+  const btn = document.getElementById("vot-button-btn");
+  const text = document.getElementById("vot-button-text");
   if (!btn || !text) return;
 
   const states = {
@@ -247,7 +247,7 @@ function init() {
   // Wait for player and inject button
   const observer = new MutationObserver(() => {
     const player = getPlayerContainer();
-    if (player && !document.getElementById("zen-vot-btn")) {
+    if (player && !document.getElementById("vot-button-btn")) {
       const btn = createTranslateButton();
       player.appendChild(btn);
 
@@ -268,7 +268,7 @@ function init() {
 
 // Cleanup function
 function cleanup() {
-  const btn = document.getElementById("zen-vot-btn");
+  const btn = document.getElementById("vot-button-btn");
   if (btn) btn.remove();
 
   if (audioElement) {

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOT Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1110;
+      --bg-elev: #171a18;
+      --line: rgba(232, 228, 214, 0.1);
+      --text: #ebe7dc;
+      --muted: #8f8a7c;
+      --accent: #d4a017;
+      --accent-dim: rgba(212, 160, 23, 0.15);
+      --control: #222622;
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      font-family: "Instrument Sans", sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(212, 160, 23, 0.12), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(70, 110, 90, 0.18), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      padding: 48px 24px 64px;
+      line-height: 1.45;
+    }
+    .wrap {
+      width: min(520px, 100%);
+      margin: 0 auto;
+    }
+    .brand {
+      font-family: "Newsreader", serif;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+    .lede {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 36px;
+      max-width: 34ch;
+    }
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 28px 0 12px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+    }
+    .row:last-child { border-bottom: 1px solid var(--line); }
+    .label { font-weight: 500; font-size: 0.95rem; }
+    .hint { color: var(--muted); font-size: 0.8rem; margin-top: 3px; }
+    select, input[type="range"] {
+      font: inherit;
+      color: var(--text);
+      background: var(--control);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: none;
+    }
+    select {
+      min-width: 168px;
+      padding: 9px 12px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238f8a7c' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    input[type="range"] {
+      width: 140px;
+      padding: 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .volume-val {
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+    .foot {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="brand">VOT</h1>
+    <p class="lede">Voice-over translation settings. Changes apply on YouTube immediately.</p>
+
+    <div class="section-title">Voice</div>
+    <div class="row">
+      <div>
+        <div class="label">Auto-translate English</div>
+        <div class="hint">Start translation when an English video opens</div>
+      </div>
+      <input type="checkbox" id="autoTranslate">
+    </div>
+    <div class="row">
+      <div>
+        <div class="label">Voice style</div>
+        <div class="hint">Live sounds better · Fast is simpler and quicker</div>
+      </div>
+      <select id="voiceMode">
+        <option value="live">Live</option>
+        <option value="fast">Fast</option>
+      </select>
+    </div>
+
+    <div class="section-title">Languages</div>
+    <div class="row">
+      <div>
+        <div class="label">Source language</div>
+        <div class="hint">Original spoken language</div>
+      </div>
+      <select id="sourceLang">
+        <option value="en">English</option>
+        <option value="de">German</option>
+        <option value="fr">French</option>
+        <option value="es">Spanish</option>
+        <option value="ja">Japanese</option>
+        <option value="ko">Korean</option>
+        <option value="zh">Chinese</option>
+      </select>
+    </div>
+    <div class="row">
+      <div>
+        <div class="label">Target language</div>
+        <div class="hint">Voice-over language</div>
+      </div>
+      <select id="targetLang">
+        <option value="ru">Russian</option>
+        <option value="en">English</option>
+        <option value="kk">Kazakh</option>
+        <option value="de">German</option>
+        <option value="fr">French</option>
+        <option value="es">Spanish</option>
+        <option value="ja">Japanese</option>
+      </select>
+    </div>
+
+    <div class="section-title">Player</div>
+    <div class="row">
+      <div>
+        <div class="label">Button position</div>
+        <div class="hint">Where the bar sits on the player</div>
+      </div>
+      <select id="buttonPosition">
+        <option value="default">Top center</option>
+        <option value="left">Left</option>
+        <option value="right">Right</option>
+      </select>
+    </div>
+    <div class="row">
+      <div>
+        <div class="label">Show volume slider</div>
+        <div class="hint">On the in-player bar</div>
+      </div>
+      <input type="checkbox" id="showVolume">
+    </div>
+    <div class="row">
+      <div>
+        <div class="label">Translation volume</div>
+        <div class="hint">Default level for new playback</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="range" id="translationVolume" min="0" max="100" step="1">
+        <span class="volume-val" id="volumeLabel">100%</span>
+      </div>
+    </div>
+
+    <p class="foot">Saved automatically to this browser.</p>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

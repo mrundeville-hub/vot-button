@@ -13,7 +13,7 @@ export async function fetchTranslation(videoUrl, retries = 2, _sleep = (ms) => n
   for (const worker of FALLBACK_WORKERS) {
     for (let i = 0; i <= retries; i++) {
       try {
-        console.log("[Zen VOT]", `Trying worker: ${worker}, attempt ${i + 1}`);
+        console.log("[VOT Button]", `Trying worker: ${worker}, attempt ${i + 1}`);
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 30000);
@@ -36,12 +36,12 @@ export async function fetchTranslation(videoUrl, retries = 2, _sleep = (ms) => n
         }
 
         const data = await response.json();
-        console.log("[Zen VOT]", "Translation response:", data);
+        console.log("[VOT Button]", "Translation response:", data);
         return data;
 
       } catch (err) {
         errors.push(`${worker}: ${err.message}`);
-        console.warn("[Zen VOT]", `Attempt ${i + 1} failed:`, err.message);
+        console.warn("[VOT Button]", `Attempt ${i + 1} failed:`, err.message);
         if (i < retries) await _sleep(1000 * (i + 1));
       }
     }

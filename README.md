@@ -1,6 +1,8 @@
-# Zen VOT - Voice Over Translation
+# VOT Button — Voice Over Translation
 
-Расширение для Zen Browser (Firefox-based) которое добавляет кнопку перевода видео на YouTube через Yandex VOT API.
+Расширение, которое добавляет на YouTube кнопку закадрового перевода через Yandex VOT API.
+Работает и в **Zen** / Firefox, и в **Helium** / Chrome / любом Chromium — весь код это один
+content script на `fetch`, без `browser.*` и `chrome.*` API, поэтому одна сборка ставится в оба движка.
 
 ## ✨ Возможности
 
@@ -13,7 +15,7 @@
 ## 📁 Структура проекта
 
 ```
-zen-vot/
+vot-button/
 ├── build/                  # Готовая сборка
 │   ├── manifest.json
 │   ├── content.js         # Сборка скрипта (minified)
@@ -31,22 +33,23 @@ zen-vot/
 
 ## 🚀 Быстрый старт
 
-### Установка в Zen Browser
+Сначала собери: `npm install && ./build.sh` — готовое расширение окажется в `build/`.
 
-#### Способ 1: Временная установка (для тестирования)
+### Zen / Firefox
 
-1. Открой Zen Browser
-2. Перейди в `about:debugging`
-3. Нажми "Этот Firefox" (This Firefox)
-4. Нажми "Загрузить временное дополнение..." (Load Temporary Add-on)
-5. Выбери файл `build/manifest.json`
+1. `about:debugging` → **This Firefox** → **Load Temporary Add-on**
+2. Выбери `build/manifest.json`
 
-#### Способ 2: Постоянная установка (требует подписи)
+Временная установка живёт до перезапуска браузера. Для постоянной нужна подпись:
+залей `vot-button-v1.0.0.zip` на [addons.mozilla.org](https://addons.mozilla.org).
 
-Для постоянной установки нужно:
-1. Зарегистрироваться на [addons.mozilla.org](https://addons.mozilla.org)
-2. Загрузить `zen-vot-v1.0.0.zip` на проверку
-3. После одобрения установить из магазина
+### Helium / Chrome / Chromium
+
+1. `chrome://extensions` → включи **Developer mode**
+2. **Load unpacked** → выбери папку `build/`
+
+Chromium проигнорирует ключ `browser_specific_settings` в манифесте (он нужен только Firefox)
+и может показать предупреждение «Unrecognized manifest key» — на работу это не влияет.
 
 ### Использование
 
@@ -84,7 +87,7 @@ npx esbuild src/content.js --bundle --outfile=dist/content.bundle.js --format=ii
 ```
 ┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
 │ YouTube     │────▶│ vot-worker   │────▶│ Yandex VOT API  │
-│ (Zen Browser)│     │ (proxy)      │     │ (api.browser...)│
+│  (браузер)  │     │ (proxy)      │     │ (api.browser...)│
 └─────────────┘     └──────────────┘     └─────────────────┘
        │                                              │
        │◄─────────────────────────────────────────────┘

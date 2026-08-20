@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Zen VOT - Voice Over Translation",
+  "name": "VOT Button — Voice Over Translation",
   "version": "1.0.0",
   "description": "Перевод видео с YouTube через Yandex VOT API",
   "browser_specific_settings": {
     "gecko": {
-      "id": "zen-vot@glamlabs.app",
+      "id": "vot-button@glamlabs.app",
       "strict_min_version": "109.0",
       "data_collection_permissions": {
         "required": ["none"]

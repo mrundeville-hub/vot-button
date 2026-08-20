@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Voice Over Translation",
+  "version": "1.0.7",
+  "description": "Watch videos with voice-over translation",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://vot-worker.eu.cc/*",
+    "https://vot-worker.vtrans.eu.cc/*",
+    "https://www.youtube.com/*",
+    "https://*.youtube.com/*",
+    "https://translate.googleapis.com/*",
+    "https://translate-backend.transly.eu.cc/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["page.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "VOT Settings",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png"
+    }
+  }
+}

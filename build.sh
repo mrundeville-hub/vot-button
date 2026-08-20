@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🏗️  Building Zen VOT Extension..."
+echo "🏗️  Building VOT Button extension..."
 
 # Clean old build
 rm -rf build/
@@ -29,16 +29,16 @@ cp icon@3x.png build/
 # Create ZIP for distribution
 echo "🤐 Creating distribution ZIP..."
 cd build
-zip -r ../zen-vot-v1.0.0.zip .
+zip -r ../vot-button-v1.0.0.zip .
 cd ..
 
 echo "✅ Build complete!"
 echo ""
 echo "📁 Build output: build/"
-echo "📦 Distribution: zen-vot-v1.0.0.zip"
+echo "📦 Distribution: vot-button-v1.0.0.zip"
 echo ""
-echo "To install in Zen Browser:"
-echo "1. Open about:debugging"
-echo "2. Click 'This Firefox'"
-echo "3. Click 'Load Temporary Add-on'"
-echo "4. Select build/manifest.json"
+echo "Install in Zen / Firefox:"
+echo "  about:debugging → This Firefox → Load Temporary Add-on → build/manifest.json"
+echo ""
+echo "Install in Helium / Chrome / any Chromium:"
+echo "  chrome://extensions → Developer mode → Load unpacked → build/"
