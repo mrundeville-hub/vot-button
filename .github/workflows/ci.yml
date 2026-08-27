@@ -16,8 +16,8 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm test
       - run: ./build.sh
+      - run: npx --yes web-ext@latest lint --source-dir build --self-hosted
       - name: Attach ZIP to release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2

@@ -1,4 +1,6 @@
-const STORE = chrome.storage.local;
+// ponytail: `browser` (Firefox/Safari, promises) else `chrome` (Chromium)
+const api = globalThis.browser ?? globalThis.chrome;
+const STORE = api.storage.local;
 const FIELDS = [
   "autoTranslate",
   "voiceMode",

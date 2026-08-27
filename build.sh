@@ -1,44 +1,28 @@
-#!/bin/bash
+#!/bin/sh
+# One build, every browser: Chromium (Chrome/Edge/Brave/Opera/Vivaldi/Helium) and Gecko (Firefox/Zen/LibreWolf).
 set -e
+cd "$(dirname "$0")"
 
-echo "🏗️  Building VOT Button extension..."
+VERSION=$(node -p "require('./src/manifest.json').version")
 
-# Clean old build
-rm -rf build/
+rm -rf build
 mkdir -p build
 
-# Bundle JS with esbuild
-echo "📦 Bundling JavaScript..."
+# vot.js pulls in node:crypto, unused in the browser
 npx esbuild src/content.js \
   --bundle \
   --outfile=build/content.js \
   --format=iife \
   --platform=browser \
-  --minify
+  --minify \
+  --alias:node:crypto=./src/crypto-stub.js
 
-# Copy manifest
-echo "📋 Copying manifest..."
-cp manifest.json build/
+cp src/manifest.json src/page.js src/background.js src/options.js src/options.html build/
+cp -R src/icons build/
 
-# Copy icons
-echo "🎨 Copying icons..."
-cp icon.png build/
-cp icon@2x.png build/
-cp icon@3x.png build/
+rm -f "vot-button-v$VERSION.zip"
+(cd build && zip -qr "../vot-button-v$VERSION.zip" .)
 
-# Create ZIP for distribution
-echo "🤐 Creating distribution ZIP..."
-cd build
-zip -r ../vot-button-v1.0.0.zip .
-cd ..
-
-echo "✅ Build complete!"
-echo ""
-echo "📁 Build output: build/"
-echo "📦 Distribution: vot-button-v1.0.0.zip"
-echo ""
-echo "Install in Zen / Firefox:"
-echo "  about:debugging → This Firefox → Load Temporary Add-on → build/manifest.json"
-echo ""
-echo "Install in Helium / Chrome / any Chromium:"
-echo "  chrome://extensions → Developer mode → Load unpacked → build/"
+echo "✅ build/ + vot-button-v$VERSION.zip"
+echo "   Chromium: chrome://extensions → Developer mode → Load unpacked → build/"
+echo "   Firefox:  about:debugging#/runtime/this-firefox → Load Temporary Add-on → build/manifest.json"

@@ -1,11 +1,12 @@
 {
   "name": "vot-button",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.8",
+  "description": "Voice-over translation for YouTube (Yandex VOT) \u2014 Chromium + Firefox",
   "main": "index.js",
   "scripts": {
-    "test": "node test/translation.test.js",
-    "build": "./build.sh"
+    "build": "./build.sh",
+    "check": "node src/check.mjs",
+    "lint": "npx --yes web-ext@latest lint --source-dir build --self-hosted"
   },
   "keywords": [],
   "author": "",

@@ -5,78 +5,23 @@
     "semantic_hash": ""
   },
   "build.sh": {
-    "mtime": 1778711849.1800578,
-    "ast_hash": "78d06ebfe5ca69e425d670ec21142150",
-    "semantic_hash": ""
-  },
-  "helium-build/background.js": {
-    "mtime": 1787096467.5982623,
-    "ast_hash": "91d0ce06a13aacac62456e8cb38f92b7",
-    "semantic_hash": ""
-  },
-  "helium-build/build.sh": {
-    "mtime": 1787094670.053336,
-    "ast_hash": "eec96249daca2548cfd4fd3e4410b741",
-    "semantic_hash": ""
-  },
-  "helium-build/check.mjs": {
-    "mtime": 1787094670.6659055,
-    "ast_hash": "aff65d7e25989d358f19f32f2bcdf03a",
-    "semantic_hash": ""
-  },
-  "helium-build/content.js": {
-    "mtime": 1787097368.4969163,
-    "ast_hash": "ce25afb2347d661bd31009f230eea79d",
-    "semantic_hash": ""
-  },
-  "helium-build/content.src.js": {
-    "mtime": 1787097367.446834,
-    "ast_hash": "5cbc3c1335906339bac3a04ff8027c00",
-    "semantic_hash": ""
-  },
-  "helium-build/crypto-stub.js": {
-    "mtime": 1787094654.1403904,
-    "ast_hash": "e7e903292711dd5aeb5a8c50deb849a6",
-    "semantic_hash": ""
-  },
-  "helium-build/manifest.json": {
-    "mtime": 1787097362.4290984,
-    "ast_hash": "0902b646b8a4496565b361cf8e62cea4",
-    "semantic_hash": ""
-  },
-  "helium-build/options.js": {
-    "mtime": 1787095847.0426648,
-    "ast_hash": "3c606d780534dbbae7a4d2a65eccce00",
-    "semantic_hash": ""
-  },
-  "manifest.json": {
-    "mtime": 1783431019.496305,
-    "ast_hash": "a1cddcc95757e7af3c3daa04889f0e33",
+    "mtime": 1787841384.4309063,
+    "ast_hash": "59f5d99faf0792de4e625885ffb7ecaf",
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1783430916.9324622,
-    "ast_hash": "3e31d8eb2581597e8c3174712ebb6366",
+    "mtime": 1787841535.905413,
+    "ast_hash": "93115e0d9b4e8a04040df9a1fe4371c6",
     "semantic_hash": ""
   },
   "src/content.js": {
-    "mtime": 1783430881.4992406,
-    "ast_hash": "745918f7491b63f5643cd1f24a6d7b51",
-    "semantic_hash": ""
-  },
-  "src/translation.js": {
-    "mtime": 1783430863.5452104,
-    "ast_hash": "2cc6738980492e01c46e7b9e30f0aa09",
-    "semantic_hash": ""
-  },
-  "test/translation.test.js": {
-    "mtime": 1783430898.102319,
-    "ast_hash": "18e7316db6d7ac43149a293433b13fab",
+    "mtime": 1787841501.880554,
+    "ast_hash": "684cacdb7ab9a1a508b3756a83782db2",
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1783430924.4751625,
-    "ast_hash": "24ec38e66411db4dca453b327d78deae",
+    "mtime": 1787841501.8738613,
+    "ast_hash": "f455d653b49e9b0fbee29defa9a1c04b",
     "semantic_hash": ""
   },
   "AGENTS.md": {
@@ -85,53 +30,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1778711901.3070562,
-    "ast_hash": "671ac24d8a91425591d6afecfb1a38c0",
-    "semantic_hash": ""
-  },
-  "helium-build/options.html": {
-    "mtime": 1787095845.905236,
-    "ast_hash": "413971d1417c1bcf6a0aacb18eee31f2",
-    "semantic_hash": ""
-  },
-  "helium-build/icons/icon-128.png": {
-    "mtime": 1787091326.3635294,
-    "ast_hash": "f898ecfae2f540b852084e63e1c57d2d",
-    "semantic_hash": ""
-  },
-  "helium-build/icons/icon-16.png": {
-    "mtime": 1787091324.0858061,
-    "ast_hash": "4e51033745a6c50b3c6ba38d5b23a1b4",
-    "semantic_hash": ""
-  },
-  "helium-build/icons/icon-256.png": {
-    "mtime": 1787091326.8221097,
-    "ast_hash": "acff1de7887769c821c52895b396808f",
-    "semantic_hash": ""
-  },
-  "helium-build/icons/icon-32.png": {
-    "mtime": 1787091324.5557914,
-    "ast_hash": "00cddf31b4503474097b7ca4e5065645",
-    "semantic_hash": ""
-  },
-  "helium-build/icons/icon-48.png": {
-    "mtime": 1787091324.9303708,
-    "ast_hash": "fbf8db18d62c0c3734338ee95c5b316e",
-    "semantic_hash": ""
-  },
-  "helium-build/icons/icon-64.png": {
-    "mtime": 1787091325.4378612,
-    "ast_hash": "f12d381bafc76f2d74b40026413a53f8",
-    "semantic_hash": ""
-  },
-  "helium-build/icons/icon-96.png": {
-    "mtime": 1787091325.9658608,
-    "ast_hash": "847eaae0a7c1b5ecb84ef48b8695c30c",
-    "semantic_hash": ""
-  },
-  "icon.png": {
-    "mtime": 1778711832.8911486,
-    "ast_hash": "c2c4eefecb0b1a8867ae76367aeab4ba",
+    "mtime": 1787841535.92265,
+    "ast_hash": "6b10a491d6bf68f7bd26358f6ecb162f",
     "semantic_hash": ""
   },
   "icon.svg": {
@@ -139,19 +39,74 @@
     "ast_hash": "fdf687f48eb94fbee39e331acb6abdb9",
     "semantic_hash": ""
   },
-  "icon@2x.png": {
-    "mtime": 1778711838.8383765,
-    "ast_hash": "60196262b0f8f920a0df6cff4527285d",
+  "src/background.js": {
+    "mtime": 1787841361.0769227,
+    "ast_hash": "9d820f36bfc1b7e9d6588b578b3d4d72",
     "semantic_hash": ""
   },
-  "icon@3x.png": {
-    "mtime": 1778711838.8515084,
-    "ast_hash": "eb17d57c84d9e4faee0d16fdeb869f05",
+  "src/check.mjs": {
+    "mtime": 1787841501.8778672,
+    "ast_hash": "40e23726976945bea44015218af061fc",
     "semantic_hash": ""
   },
-  "helium-build/page.js": {
+  "src/crypto-stub.js": {
+    "mtime": 1787094654.1403904,
+    "ast_hash": "e7e903292711dd5aeb5a8c50deb849a6",
+    "semantic_hash": ""
+  },
+  "src/manifest.json": {
+    "mtime": 1787841349.8757355,
+    "ast_hash": "3c56a740d345f066dafcc82734f55a2e",
+    "semantic_hash": ""
+  },
+  "src/options.js": {
+    "mtime": 1787841361.1040092,
+    "ast_hash": "438d7833aff11bcc7a94bf64f4f05e80",
+    "semantic_hash": ""
+  },
+  "src/page.js": {
     "mtime": 1787097345.621664,
     "ast_hash": "7cca0f68cdc01477ad0f98a1a2f0127a",
+    "semantic_hash": ""
+  },
+  "src/options.html": {
+    "mtime": 1787095845.905236,
+    "ast_hash": "413971d1417c1bcf6a0aacb18eee31f2",
+    "semantic_hash": ""
+  },
+  "src/icons/icon-128.png": {
+    "mtime": 1787091326.3635294,
+    "ast_hash": "f898ecfae2f540b852084e63e1c57d2d",
+    "semantic_hash": ""
+  },
+  "src/icons/icon-16.png": {
+    "mtime": 1787091324.0858061,
+    "ast_hash": "4e51033745a6c50b3c6ba38d5b23a1b4",
+    "semantic_hash": ""
+  },
+  "src/icons/icon-256.png": {
+    "mtime": 1787091326.8221097,
+    "ast_hash": "acff1de7887769c821c52895b396808f",
+    "semantic_hash": ""
+  },
+  "src/icons/icon-32.png": {
+    "mtime": 1787091324.5557914,
+    "ast_hash": "00cddf31b4503474097b7ca4e5065645",
+    "semantic_hash": ""
+  },
+  "src/icons/icon-48.png": {
+    "mtime": 1787091324.9303708,
+    "ast_hash": "fbf8db18d62c0c3734338ee95c5b316e",
+    "semantic_hash": ""
+  },
+  "src/icons/icon-64.png": {
+    "mtime": 1787091325.4378612,
+    "ast_hash": "f12d381bafc76f2d74b40026413a53f8",
+    "semantic_hash": ""
+  },
+  "src/icons/icon-96.png": {
+    "mtime": 1787091325.9658608,
+    "ast_hash": "847eaae0a7c1b5ecb84ef48b8695c30c",
     "semantic_hash": ""
   }
 }

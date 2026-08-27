@@ -20,4 +20,4 @@ const result = await client.translateVideo({
 if (!result.translated || !result.url?.startsWith("http")) {
   throw new Error("unexpected translate result: " + JSON.stringify(result));
 }
-console.log("helium-vot check ok");
+console.log("vot check ok");
