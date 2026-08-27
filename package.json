@@ -6,7 +6,8 @@
   "scripts": {
     "build": "./build.sh",
     "check": "node src/check.mjs",
-    "lint": "npx --yes web-ext@latest lint --source-dir build --self-hosted"
+    "lint": "npx --yes web-ext@latest lint --source-dir build --self-hosted",
+    "safari": "./safari.sh"
   },
   "keywords": [],
   "author": "",

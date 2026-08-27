@@ -7,7 +7,7 @@
 |---|---|---|
 | Chromium | Chrome, Edge, Brave, Opera, Vivaldi, Helium, Arc | ✅ MV3 service worker |
 | Gecko | Firefox 128+, Zen, LibreWolf, Waterfox | ✅ MV3 event page |
-| WebKit | Safari | ⚠️ нужна конвертация через Xcode (`xcrun safari-web-extension-converter build/`) |
+| WebKit | Safari 16.4+ (macOS, iOS) | ✅ `./safari.sh` собирает .app (нужен Xcode) |
 
 ## Установка
 
@@ -20,6 +20,24 @@ npm install && ./build.sh     # → build/ и vot-button-v1.0.8.zip
 **Firefox / Zen:** `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on** → `build/manifest.json`
 Временная установка живёт до перезапуска. Для постоянной — подписать ZIP на
 [addons.mozilla.org](https://addons.mozilla.org) (ID расширения уже задан в манифесте).
+
+**Safari:** распакованное расширение Safari не грузит — его надо завернуть в приложение.
+Нужен Xcode:
+
+```bash
+./safari.sh                  # → safari/VOT Button.app
+open "safari/VOT Button.app" # один раз, чтобы система его увидела
+```
+
+Дальше в Safari: Settings → Advanced → **Show features for web developers**, затем
+Develop → **Allow Unsigned Extensions** (подпись ad-hoc, при каждом перезапуске Safari
+галку надо ставить заново), затем Settings → Extensions → включить **VOT Button** и дать
+ему **Always Allow on youtube.com** — Safari спрашивает разрешения по сайтам, без этого
+content script не запустится. Для постоянной установки без галки нужен Developer ID:
+подставь свою команду вместо `CODE_SIGN_IDENTITY=-` в `safari.sh`.
+
+`safari.sh` собирает и iOS-таргет — он лежит в `safari/VOT Button/VOT Button.xcodeproj`,
+собери его в Xcode на устройство или симулятор.
 
 ## Использование
 
@@ -52,6 +70,11 @@ page.js (world: MAIN) ──postMessage──▶ content.js   # достаёт y
   CORS-режим ломал бы воспроизведение.
 - Субтитры берут `playerResponse` тремя путями (MAIN-world → `<script>` на странице →
   повторный fetch watch-страницы), поэтому работают даже если `world: MAIN` не поддержан.
+  Это ровно случай Safari: конвертер честно предупреждает, что `world` и
+  `options_ui.open_in_tab` он игнорирует — `page.js` там просто отдаёт `null`, дальше
+  включается фолбэк, а настройки открываются во всплывашке вместо вкладки.
+- `api.storage.onChanged` вместо `storage.local.onChanged` — событие на уровне области
+  есть не везде, а проверка `area === "local"` в коде и так была.
 
 ## Разработка
 
@@ -66,7 +89,8 @@ src/
 ```
 
 ```bash
-npm run build   # сборка
+npm run build   # сборка build/ (Chromium + Firefox)
+npm run safari  # build/ → safari/VOT Button.app
 npm run check   # дёргает vot-worker.eu.cc и реальный перевод — должно вывести "vot check ok"
 npm run lint    # web-ext lint: 0 errors обязателен
 ```
@@ -83,6 +107,8 @@ npm run lint    # web-ext lint: 0 errors обязателен
 | нет звука | проверь громкость в баре и микшере, нажми play |
 | нет субтитров | у видео нет дорожек `timedtext` на исходном языке |
 | кнопки нет | не страница `/watch?v=...`, или плеер ещё грузится |
+| в Safari расширение пропало | слетела галка Develop → Allow Unsigned Extensions |
+| в Safari ничего не происходит | не выдан доступ к youtube.com в Settings → Extensions |
 
 ## Лицензия
 

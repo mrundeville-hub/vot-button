@@ -1019,7 +1019,8 @@ async function init() {
   setTimeout(() => obs.disconnect(), 15000);
 }
 
-STORE.onChanged.addListener((changes, area) => {
+// ponytail: storage.onChanged, not STORE.onChanged — the area check is already here and Safari lags on the per-area event
+api.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
   let touched = false;
   for (const [k, { newValue }] of Object.entries(changes)) {

@@ -10,13 +10,13 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1787841535.905413,
-    "ast_hash": "93115e0d9b4e8a04040df9a1fe4371c6",
+    "mtime": 1787841741.5558755,
+    "ast_hash": "13efcb6bde614f1b6bcbd95ecd88d8d1",
     "semantic_hash": ""
   },
   "src/content.js": {
-    "mtime": 1787841501.880554,
-    "ast_hash": "684cacdb7ab9a1a508b3756a83782db2",
+    "mtime": 1787841741.510282,
+    "ast_hash": "32f6d9d5b87250aa1e5f042aef1d96ad",
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
@@ -30,8 +30,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1787841535.92265,
-    "ast_hash": "6b10a491d6bf68f7bd26358f6ecb162f",
+    "mtime": 1787841890.7550886,
+    "ast_hash": "3175fa03138505cb600dcc2bbe8df171",
     "semantic_hash": ""
   },
   "icon.svg": {
@@ -107,6 +107,11 @@
   "src/icons/icon-96.png": {
     "mtime": 1787091325.9658608,
     "ast_hash": "847eaae0a7c1b5ecb84ef48b8695c30c",
+    "semantic_hash": ""
+  },
+  "safari.sh": {
+    "mtime": 1787841810.6966772,
+    "ast_hash": "2cae1708ae9179bb8ea241de24c53108",
     "semantic_hash": ""
   }
 }
