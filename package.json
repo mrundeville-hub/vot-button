@@ -1,6 +1,6 @@
 {
   "name": "vot-button",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Voice-over translation for YouTube (Yandex VOT) \u2014 Chromium + Firefox",
   "main": "index.js",
   "scripts": {

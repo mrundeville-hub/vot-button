@@ -8,6 +8,7 @@ const STORE = api.storage.local;
 const DEFAULTS = {
   voiceMode: "live",
   buttonPosition: "default",
+  buttonOffset: { x: 0.5, y: 0 },
   sourceLang: "en",
   targetLang: "ru",
   showVolume: true,
@@ -45,6 +46,22 @@ let lastEnText = "";
 let lastRuText = "";
 const wordCache = new Map();
 let subsLoadedFor = null;
+let barResizeObserver = null;
+let pendingPlayerObserver = null;
+let dragState = null;
+let translationRequestId = 0;
+
+async function workerFetch(url, options = {}) {
+  const result = await api.runtime.sendMessage({
+    type: "fetchWorker",
+    url,
+    method: options.method || "POST",
+    headers: options.headers || {},
+    body: options.body,
+  });
+  if (!result?.ok) throw new Error(result?.error || "Worker request failed");
+  return new Response(new Uint8Array(result.bytes), { status: result.status });
+}
 
 async function loadSettings() {
   try {
@@ -69,18 +86,25 @@ function injectStyles() {
   style.id = "vot-helium-styles";
   style.textContent = `
     .vot-btn-bar {
-      position: absolute !important; top: 60px !important; z-index: 2147483646 !important;
+      position: absolute !important; top: 12px !important; z-index: 2147483646 !important;
       display: flex !important; align-items: center !important; height: 38px !important;
-      background: rgba(20,22,21,0.96) !important; color: #f2efe6 !important; fill: #f2efe6 !important;
+      background: rgba(20,22,21,0.68) !important; color: #f2efe6 !important; fill: #f2efe6 !important;
       border: 1px solid rgba(242,239,230,0.12) !important; border-radius: 10px !important;
       box-shadow: 0 8px 28px rgba(0,0,0,0.45) !important;
       font-family: ui-sans-serif, system-ui, sans-serif !important; font-size: 13px !important;
-      user-select: none !important; opacity: 0; transition: opacity 0.2s ease;
+      user-select: none !important; opacity: 0; transition: opacity 0.2s ease, background 0.2s ease;
     }
     .vot-btn-bar.pos-default { left: 50% !important; transform: translateX(-50%) !important; }
     .vot-btn-bar.pos-left { left: 12px !important; transform: none !important; }
     .vot-btn-bar.pos-right { right: 12px !important; left: auto !important; transform: none !important; }
     .vot-btn-bar.visible { opacity: 1; }
+    .vot-btn-bar:hover, .vot-btn-bar:focus-within { background: rgba(20,22,21,0.9) !important; }
+    .vot-btn-bar .vot-drag-handle {
+      width: 20px; height: 100%; display: grid; place-items: center; flex-shrink: 0;
+      cursor: grab; touch-action: none; color: rgba(242,239,230,0.75);
+    }
+    .vot-btn-bar .vot-drag-handle:active { cursor: grabbing; }
+    .vot-btn-bar .vot-drag-handle::before { content: "⋮⋮"; font-size: 15px; letter-spacing: -4px; }
     .vot-btn-bar svg { width: 22px; height: 22px; display: block; fill: inherit; }
     .vot-btn-bar .vot-sep { width: 1px; height: 20px; background: rgba(242,239,230,0.12); flex-shrink: 0; }
     .vot-btn-bar .vot-segment {
@@ -186,11 +210,25 @@ function voiceLabel(mode) {
 
 function applyBarLayout() {
   if (!btnBar) return;
-  btnBar.classList.remove("pos-default", "pos-left", "pos-right");
-  const pos = settings.buttonPosition === "left" || settings.buttonPosition === "right"
+  btnBar.classList.remove("pos-default", "pos-left", "pos-right", "pos-custom");
+  const pos = ["left", "right"].includes(settings.buttonPosition) ||
+    (settings.buttonPosition === "custom" && settings.buttonOffset)
     ? settings.buttonPosition
     : "default";
   btnBar.classList.add(`pos-${pos}`);
+  if (pos === "custom" && settings.buttonOffset) {
+    const player = btnBar.parentElement;
+    const maxX = Math.max(0, player.clientWidth - btnBar.offsetWidth);
+    const maxY = Math.max(0, player.clientHeight - btnBar.offsetHeight);
+    const x = Math.min(1, Math.max(0, Number(settings.buttonOffset.x) || 0));
+    const y = Math.min(1, Math.max(0, Number(settings.buttonOffset.y) || 0));
+    btnBar.style.setProperty("left", `${Math.round(x * maxX)}px`, "important");
+    btnBar.style.setProperty("top", `${Math.round(y * maxY)}px`, "important");
+    btnBar.style.setProperty("right", "auto", "important");
+    btnBar.style.setProperty("transform", "none", "important");
+  } else {
+    for (const property of ["left", "top", "right", "transform"]) btnBar.style.removeProperty(property);
+  }
   const volWrap = btnBar.querySelector(".vot-vol");
   if (volWrap) volWrap.style.display = settings.showVolume ? "flex" : "none";
   const voiceBtn = btnBar.querySelector(".vot-voice-current");
@@ -219,6 +257,12 @@ function createButtonBar() {
   const bar = document.createElement("div");
   bar.className = "vot-btn-bar pos-default";
   bar.dataset.status = "idle";
+
+  const dragHandle = document.createElement("div");
+  dragHandle.className = "vot-drag-handle";
+  dragHandle.setAttribute("role", "button");
+  dragHandle.setAttribute("aria-label", "Drag to move the translation controls");
+  dragHandle.title = "Drag to move";
 
   const transSeg = document.createElement("button");
   transSeg.type = "button";
@@ -310,6 +354,7 @@ function createButtonBar() {
         <option value="default">Center</option>
         <option value="left">Left</option>
         <option value="right">Right</option>
+        <option value="custom">Custom (drag)</option>
       </select>
     </div>
     <div class="vot-settings-row">
@@ -318,7 +363,7 @@ function createButtonBar() {
     </div>
   `;
 
-  bar.append(transSeg, voiceWrap, sep1, vol, sep2, settingsWrap);
+  bar.append(dragHandle, transSeg, voiceWrap, sep1, vol, sep2, settingsWrap);
   document.body.append(voiceMenuEl, settingsMenuEl);
   return bar;
 }
@@ -755,7 +800,7 @@ async function fetchTranslation(videoId) {
 
   const errors = [];
   for (const host of WORKERS) {
-    const client = new VOTWorkerClient({ host });
+    const client = new VOTWorkerClient({ host, fetchFn: workerFetch });
     try {
       for (let i = 0; i < 12; i++) {
         if (i > 0) setState("loading", `Waiting ${i}/11...`);
@@ -805,6 +850,7 @@ function syncAudio(video, url) {
   audioEl = new Audio(url);
   // ponytail: no crossOrigin — nothing reads the samples, and CORS-mode media fails in Firefox
   audioEl.volume = Math.min(1, Math.max(0, (settings.translationVolume ?? 100) / 100));
+  audioEl.playbackRate = video.playbackRate;
 
   const onPlay = () => { if (audioEl?.paused) audioEl.play().catch(() => {}); };
   const onPause = () => audioEl?.pause();
@@ -829,24 +875,29 @@ function syncAudio(video, url) {
 async function startTranslate(videoId) {
   if (translating) return;
   translating = true;
+  const requestId = ++translationRequestId;
   setState("loading", settings.voiceMode === "live" ? "Live..." : "Translating...");
   try {
     const data = await fetchTranslation(videoId);
+    if (currentVideoId !== videoId || requestId !== translationRequestId) return;
     const video = document.querySelector("video");
     if (!video) throw new Error("Video not found");
     syncAudio(video, data.url);
     setState("success", "Done");
     ensureSubtitles(videoId);
   } catch (e) {
+    if (currentVideoId !== videoId || requestId !== translationRequestId) return;
     log("Error:", e);
-    setState("error", "Error");
+    setState("error", "Retry");
+    btnBar.querySelector(".vot-translate").title = e?.message || String(e);
     setTimeout(() => {
-      translating = false;
-      setState("idle", "Translate");
+      if (currentVideoId === videoId && btnBar?.dataset.status === "error") {
+        setState("idle", "Translate");
+      }
     }, 4000);
-    return;
+  } finally {
+    if (requestId === translationRequestId) translating = false;
   }
-  translating = false;
 }
 
 function setState(status, label) {
@@ -855,6 +906,7 @@ function setState(status, label) {
   if (lbl && label != null) lbl.textContent = label;
   btnBar.dataset.status = status;
   btnBar.dataset.loading = status === "loading" ? "true" : "false";
+  if (status !== "error") btnBar.querySelector(".vot-translate").removeAttribute("title");
 }
 
 function getVideoId() {
@@ -874,12 +926,73 @@ function maybeAutoTranslate(videoId) {
   }, 900);
 }
 
+function bindBarDragging() {
+  const handle = btnBar.querySelector(".vot-drag-handle");
+  handle.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    closeMenus();
+    const player = btnBar.parentElement;
+    const playerRect = player.getBoundingClientRect();
+    const barRect = btnBar.getBoundingClientRect();
+    dragState = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      left: barRect.left - playerRect.left,
+      top: barRect.top - playerRect.top,
+      moved: false,
+    };
+    handle.setPointerCapture(event.pointerId);
+  });
+  handle.addEventListener("pointermove", (event) => {
+    if (!dragState || event.pointerId !== dragState.pointerId || !btnBar) return;
+    const dx = event.clientX - dragState.startX;
+    const dy = event.clientY - dragState.startY;
+    if (!dragState.moved && Math.hypot(dx, dy) < 4) return;
+    dragState.moved = true;
+    const player = btnBar.parentElement;
+    const maxX = Math.max(0, player.clientWidth - btnBar.offsetWidth);
+    const maxY = Math.max(0, player.clientHeight - btnBar.offsetHeight);
+    btnBar.classList.remove("pos-default", "pos-left", "pos-right");
+    btnBar.classList.add("pos-custom");
+    btnBar.style.setProperty("left", `${Math.round(Math.min(maxX, Math.max(0, dragState.left + dx)))}px`, "important");
+    btnBar.style.setProperty("top", `${Math.round(Math.min(maxY, Math.max(0, dragState.top + dy)))}px`, "important");
+    btnBar.style.setProperty("right", "auto", "important");
+    btnBar.style.setProperty("transform", "none", "important");
+  });
+  const finishDrag = (event) => {
+    if (!dragState || event.pointerId !== dragState.pointerId) return;
+    const moved = dragState.moved;
+    dragState = null;
+    if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+    if (!moved || !btnBar) return;
+    const player = btnBar.parentElement;
+    const maxX = Math.max(0, player.clientWidth - btnBar.offsetWidth);
+    const maxY = Math.max(0, player.clientHeight - btnBar.offsetHeight);
+    settings.buttonOffset = {
+      x: maxX ? parseFloat(btnBar.style.left) / maxX : 0,
+      y: maxY ? parseFloat(btnBar.style.top) / maxY : 0,
+    };
+    settings.buttonPosition = "custom";
+    syncSettingsPanel();
+    STORE.set({ buttonPosition: "custom", buttonOffset: settings.buttonOffset })
+      .catch((error) => log("Could not save button position", error));
+  };
+  handle.addEventListener("pointerup", finishDrag);
+  handle.addEventListener("pointercancel", finishDrag);
+}
+
 function injectBar(videoId) {
   if (btnBar || !getPlayerContainer()) return;
   const player = getPlayerContainer();
   btnBar = createButtonBar();
   player.appendChild(btnBar);
   applyBarLayout();
+  bindBarDragging();
+  barResizeObserver = new ResizeObserver(() => applyBarLayout());
+  barResizeObserver.observe(player);
   syncSettingsPanel();
   requestAnimationFrame(() => btnBar?.classList.add("visible"));
 
@@ -955,6 +1068,12 @@ function onDocClick(e) {
 }
 
 function removeBar() {
+  translationRequestId++;
+  dragState = null;
+  pendingPlayerObserver?.disconnect();
+  pendingPlayerObserver = null;
+  barResizeObserver?.disconnect();
+  barResizeObserver = null;
   document.removeEventListener("click", onDocClick, true);
   closeMenus();
   voiceMenuEl?.remove();
@@ -1002,21 +1121,21 @@ async function init() {
   removeBar();
   currentVideoId = vid;
   await loadSettings();
+  if (currentVideoId !== vid) return;
 
   const tryInject = () => {
     if (getPlayerContainer() && !btnBar) {
       injectBar(vid);
+      pendingPlayerObserver?.disconnect();
+      pendingPlayerObserver = null;
       return true;
     }
     return false;
   };
   if (tryInject()) return;
 
-  const obs = new MutationObserver(() => {
-    if (tryInject()) obs.disconnect();
-  });
-  obs.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(() => obs.disconnect(), 15000);
+  pendingPlayerObserver = new MutationObserver(tryInject);
+  pendingPlayerObserver.observe(document.documentElement, { childList: true, subtree: true });
 }
 
 // ponytail: storage.onChanged, not STORE.onChanged — the area check is already here and Safari lags on the per-area event
@@ -1042,6 +1161,12 @@ new MutationObserver(() => {
     lastUrl = location.href;
     removeBar();
     setTimeout(init, 500);
+  } else if (currentVideoId && btnBar) {
+    const player = getPlayerContainer();
+    if (player && (!btnBar?.isConnected || btnBar.parentElement !== player)) {
+      removeBar();
+      setTimeout(init, 0);
+    }
   }
 }).observe(document.documentElement, { subtree: true, childList: true });
 
